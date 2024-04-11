@@ -2,10 +2,10 @@
 Script for scraping activity from foxhole.
 
 Requirements:
--Python 3.10
---pytesseract module
---pyautogui module
---matplotlib module (only for chart generation)
+- Python 3.10
+- - pytesseract module
+- - pyautogui module
+- - matplotlib module (only for chart generation)
 
 1. Make sure Foxhole is on primary/left screen
 2. Be loaded into the game (be able to walk and shoot)
