@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import json
 
-filename = 'WC111-5th.txt'
-graph_title = 'WC111 - 5th'
+filename = 'out.json'
+graph_title = 'WC112 - 5th'
 
 plt.rcParams['font.size'] = 7
 activity = [
@@ -108,6 +108,9 @@ def clean_data(labels, data):
     return labels, data
 
 def main():
+    
+    graph_title = input("Write the file name for the graphs: ")
+    
     data = get_data()
     names = [x for x in data.keys()]
     for y in range(len(activity)):
