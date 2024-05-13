@@ -6,13 +6,14 @@ from pprint import pprint
 import json
 
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
-activity_time_offset = 1
+activity_time_offset = 0.5 #1s works well
 name_center = (1026, 358)
 activity_log = (1115, 402)
 activity_offset = (89, 44)
 violation_log = (1115, 430)
 violation_offset = (89, 72)
 out_data = {}
+start_delay = 5 #in seconds
 
 def get_text_from_position(position, show=False):
     img = ImageGrab.grab()
@@ -20,10 +21,6 @@ def get_text_from_position(position, show=False):
     if show:
         img.show()
     return pytesseract.image_to_string(img)
-
-def get_activity():
-    sleep(activity_time_offset)
-    return get_text_from_position((650, 155, 1266, 661))
 
 def get_number(position):
     text = get_text_from_position(position)
@@ -40,6 +37,7 @@ def get_number(position):
         text = int(text)
     except Exception as e:
         print(e, (position[3]-33)/34)
+        print(repr(text))
         text = 0
     #print(text)
     return text
@@ -157,11 +155,29 @@ def save_to_file():
     with open('out.json', 'w') as file:
         file.write(json.dumps(out_data, indent=2))
 
+def start_screen():
+    print("This script will allow you to gather activity statistics of everyone in your regiment.")
+    print("It works by controlling the mouse to show activity logs, and scanning the screen, therefore it's recommended to not use mouse while it's running")
+    print("--\nIf at any moment you want to stop the script, move your mouse to top-left of the screen.\n--")
+    print("At the start mouse will move to the area, on which foxhole should be opened. In foxhole you be spawned in, and should NOT have any menu/F1 open.")
+    
+def countdown(cnt):
+    for x in range(cnt, 0):
+        print(f"starting in {x}s")
+        sleep(1)
+
 def main():
     
     # focus on game, assumed to be on screen one, 1920x1080
-    pg.moveTo( (500, 500) )
-    pg.click()
+    start_screen()
+    
+    pg.click( (100, 100) )
+    
+    input("\nPress enter in terminal to start\n")
+    countdown(start_delay)
+    print("Starting")
+    
+    pg.click( (100, 100) )
 
     #open stats
     stats()
