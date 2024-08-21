@@ -54,9 +54,17 @@ def make_autopct(values):
     
 # receives data, that should be shown on graph, and makes that graph
 def make_chart(id, title, labels, data):
+    global data_length
+    
+    average = f'''Average: {"{:,}".format(round(sum(data) / len(data), 2)).replace(",", "'")}'''
+    average_all = f'''Average (including 0 stats): {"{:,}".format(round(sum(data) / data_length, 2)).replace(",", "'")}'''
+    total = f'''Total: {"{:,}".format(sum(data)).replace(",", "'")}'''
+    
     fig, ax = plt.subplots(figsize=(6.2, 6.2), dpi = 200)
     plt.text(-0.15, 1.1, title, ha='left', va='top', transform=ax.transAxes)
-    plt.text(-0.15, -0.07, f'Total: {sum(data)}', ha='left', va='top', transform=ax.transAxes)
+    plt.text(-0.15, -0.04, average, ha='left', va='top', transform=ax.transAxes)
+    plt.text(-0.15, -0.01, average_all, ha='left', va='top', transform=ax.transAxes)
+    plt.text(-0.15, -0.07, total, ha='left', va='top', transform=ax.transAxes)
     patches, labels, pct_texts = ax.pie(data, labels=labels, autopct=make_autopct(data), rotatelabels=True, pctdistance=0.7)
     
     # rotating autopct https://stackoverflow.com/questions/64411633/how-to-rotate-the-percentage-label-in-a-pie-chart-to-match-the-category-label-ro
@@ -109,9 +117,12 @@ def clean_data(labels, data):
 
 def main():
     
+    global data_length
+    
     graph_title = input("Write the file name for the graphs: ")
     
     data = get_data()
+    data_length = len(data)
     names = [x for x in data.keys()]
     for y in range(len(activity)):
         print(y)
