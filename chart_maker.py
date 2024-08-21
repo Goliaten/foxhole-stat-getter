@@ -49,7 +49,8 @@ def make_autopct(values):
     def my_autopct(pct):
         total = sum(values)
         val = int(round(pct*total/100.0))
-        return '{v:d}'.format(v=val)
+        #{v:d}.format(v=val)
+        return '{v}'.format(v= '{:,}'.format(val).replace(',', "'") )
     return my_autopct
     
 # receives data, that should be shown on graph, and makes that graph
