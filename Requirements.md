@@ -1,17 +1,12 @@
-# Requirements
+[How to install python packages](https://packaging.python.org/en/latest/tutorials/installing-packages/)
 
-## For main.py
-- PIL
+# Requirements
+- [Python 3.x](https://www.python.org/downloads/)
+
+## Python Packages for main.py
+- pillow
 - pytesseract
 - pyautogui
-- pprint (by default installed)
-- time (by default installed)
-- json (by default installed)
 
-## For chart_maker.py
+## Python Packages for chart_maker.py
 - matplotlib
-- json (by default installed)
-
-## For top_stats.py
-- pprint (by default installed)
-- json (by default installed)
