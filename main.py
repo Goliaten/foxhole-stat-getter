@@ -4,6 +4,7 @@ import pyautogui as pg
 from time import sleep
 from pprint import pprint
 import json
+import sys, os
 
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 activity_time_offset = 0.5 #1s works well
@@ -14,12 +15,15 @@ violation_log = (1115, 430)
 violation_offset = (89, 72)
 out_data = {}
 start_delay = 5 #in seconds
+printout_log = ''
 
 def get_text_from_position(position, show=False):
     img = ImageGrab.grab()
     img = img.crop( position )
+    img = img.convert('L')
     if show:
         img.show()
+    #img.save(f"{position}.png")
     return pytesseract.image_to_string(img)
 
 def get_number(position):
@@ -168,6 +172,8 @@ def countdown(cnt):
 
 def main():
     
+    global printout_log
+    
     # focus on game, assumed to be on screen one, 1920x1080
     start_screen()
     
@@ -185,20 +191,25 @@ def main():
     # iterate over people
     counter = 0
     while True:
+        if counter % 50 == 0 and counter != 0:
+            scroll(-37 + 3 + 3)
+        elif counter % 50 in (20, 30):
+            scroll(-3)
         #single iteration of a loop
         name = get_name()
+        if name == "":
+            name = f"__{counter}__"
         print(name)
+        printout_log += f"{name}\n"
+        
         open_activity()
         data = get_activity_2()
         save_data(name, data)
         
         exit()
         stats()
-        #after 190 entries it starts to scroll a bit too much
-        if counter % 2 == 0:
-            scroll(131) #magic number
-        else:
-            scroll(132) #magic number
+        
+        scroll(132) #need to scroll 35 pixels, and 132 = 35
         counter += 1
         
         if get_name() == name:
@@ -210,7 +221,12 @@ def main():
     for x in range(1, 10):
         v_off = 35*x #vertical offset
         name = get_name( (927, 343 + v_off, 1126, 373 + v_off) ) #name_frame
+        
+        if name == "":
+            name = f"__{counter}__"
         print(name)
+        printout_log += f"{name}\n"
+        
         open_activity( (1026, 358+v_off), (1115, 402+v_off) ) #name_center, activity_log
         data = get_activity_2()
         #pprint(data)
@@ -222,4 +238,22 @@ def main():
     exit()
     
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except pg.FailSafeException:
+        print("Failsafe triggered.")
+        print("Progress saved.")
+        save_to_file()
+    except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        
+        print(f"Exception occured -- {e} -- {type(e)}")
+        print(exc_type, fname, exc_tb.tb_lineno)
+        print("Progress saved.")
+        save_to_file()
+        
+    with open("log.txt", "w", encoding="utf-8") as file:
+        file.write(printout_log)
+    
+    input("Press enter to exit")
