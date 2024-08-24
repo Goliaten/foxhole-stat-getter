@@ -45,7 +45,6 @@ def get_number(position):
         text = 0
     #print(text)
     return text
-    
 
 def get_activity_2():
     sleep(activity_time_offset)
@@ -109,7 +108,6 @@ def check_if_active(position):
         return 'WH'
     else:
         return 'RP'
-
 
 #open only the first guy
 def open_activity(position = name_center, log=activity_log):
@@ -190,12 +188,14 @@ def main():
 
     # iterate over people
     counter = 0
+    same_counter = 0
     while True:
+    
         if counter % 50 == 0 and counter != 0:
             scroll(-37 + 3 + 3)
         elif counter % 50 in (20, 30):
             scroll(-3)
-        #single iteration of a loop
+            
         name = get_name()
         if name == "":
             name = f"__{counter}__"
@@ -213,12 +213,15 @@ def main():
         counter += 1
         
         if get_name() == name:
-            counter += 1
-            if counter > 4:
+            same_counter += 1
+            if same_counter >= 3:
                 break
+            else:
+                same_counter = 0
 
     # iterate over people at the end of the list
     for x in range(1, 10):
+        
         v_off = 35*x #vertical offset
         name = get_name( (927, 343 + v_off, 1126, 373 + v_off) ) #name_frame
         
@@ -233,6 +236,7 @@ def main():
         save_data(name, data)
         exit()
         stats()
+        counter += 1
 
     save_to_file()
     exit()
