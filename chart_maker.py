@@ -55,17 +55,23 @@ def make_autopct(values):
     
 # receives data, that should be shown on graph, and makes that graph
 def make_chart(id, title, labels, data):
-    global data_length
+    global data_length, stat_data_length
     
     average = f'''Average: {"{:,}".format(round(sum(data) / len(data), 2)).replace(",", "'")}'''
     average_all = f'''Average (including 0 stats): {"{:,}".format(round(sum(data) / data_length, 2)).replace(",", "'")}'''
+    count = f'''Number of people with stats: {stat_data_length}'''
+    count_all =  f'''Total number of people: {data_length}'''
     total = f'''Total: {"{:,}".format(sum(data)).replace(",", "'")}'''
     
     fig, ax = plt.subplots(figsize=(6.2, 6.2), dpi = 200)
     plt.text(-0.15, 1.1, title, ha='left', va='top', transform=ax.transAxes)
-    plt.text(-0.15, -0.04, average, ha='left', va='top', transform=ax.transAxes)
-    plt.text(-0.15, -0.01, average_all, ha='left', va='top', transform=ax.transAxes)
-    plt.text(-0.15, -0.07, total, ha='left', va='top', transform=ax.transAxes)
+    plt.text(-0.15, -0.05, average_all, ha='left', va='top', transform=ax.transAxes)
+    plt.text(-0.15, -0.08, average, ha='left', va='top', transform=ax.transAxes)
+    plt.text(-0.15, -0.11, total, ha='left', va='top', transform=ax.transAxes)
+    
+    plt.text(0.55, -0.11, count, ha='left', va='top', transform=ax.transAxes)
+    plt.text(0.55, -0.08, count_all, ha='left', va='top', transform=ax.transAxes)
+    
     patches, labels, pct_texts = ax.pie(data, labels=labels, autopct=make_autopct(data), rotatelabels=True, pctdistance=0.7)
     
     # rotating autopct https://stackoverflow.com/questions/64411633/how-to-rotate-the-percentage-label-in-a-pie-chart-to-match-the-category-label-ro
@@ -83,6 +89,11 @@ def chart_handle(id, title, labels, data):
     make_chart(id, title, labels, data)
 
 def clean_data(labels, data):
+    
+    global stat_data_length, data_length
+    
+    stat_data_length = data_length
+    
     # sorts labels and data
     labels = [l for _,l in sorted(zip(data, labels))]
     data.sort()
@@ -92,6 +103,8 @@ def clean_data(labels, data):
     for ind, score in enumerate(data):
         if score == 0:
             ind_remove.append(ind)
+            stat_data_length -= 1
+            
     for x in ind_remove[::-1]:
         del labels[x]
         del data[x]
