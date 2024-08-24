@@ -41,7 +41,7 @@ activity_label = [
 ]
 data_cutoff = 0.01
 
-def get_data():
+def get_data(filename):
     with open(filename, 'r') as file:
         return json.loads(file.read())
         
@@ -55,12 +55,20 @@ def make_autopct(values):
     
 # receives data, that should be shown on graph, and makes that graph
 def make_chart(id, title, labels, data):
-    global data_length, stat_data_length
+    global total_data_length, stat_data_length
     
-    average = f'''Average: {"{:,}".format(round(sum(data) / len(data), 2)).replace(",", "'")}'''
-    average_all = f'''Average (including 0 stats): {"{:,}".format(round(sum(data) / data_length, 2)).replace(",", "'")}'''
+    if len(data) > 0:
+        average = f'''Average: {"{:,}".format(round(sum(data) / len(data), 2)).replace(",", "'")}'''
+    else:
+        average = 'Average: 0'
+    
+    if total_data_length > 0:
+        average_all = f'''Average (including 0 stats): {"{:,}".format(round(sum(data) / total_data_length, 2)).replace(",", "'")}'''
+    else:
+        'Average (including 0 stats): 0'
+        
     count = f'''Number of people with stats: {stat_data_length}'''
-    count_all =  f'''Total number of people: {data_length}'''
+    count_all =  f'''Total number of people: {total_data_length}'''
     total = f'''Total: {"{:,}".format(sum(data)).replace(",", "'")}'''
     
     fig, ax = plt.subplots(figsize=(6.2, 6.2), dpi = 200)
@@ -90,9 +98,9 @@ def chart_handle(id, title, labels, data):
 
 def clean_data(labels, data):
     
-    global stat_data_length, data_length
+    global stat_data_length, total_data_length
     
-    stat_data_length = data_length
+    stat_data_length = total_data_length
     
     # sorts labels and data
     labels = [l for _,l in sorted(zip(data, labels))]
@@ -104,7 +112,7 @@ def clean_data(labels, data):
         if score == 0:
             ind_remove.append(ind)
             stat_data_length -= 1
-            
+    
     for x in ind_remove[::-1]:
         del labels[x]
         del data[x]
@@ -131,12 +139,13 @@ def clean_data(labels, data):
 
 def main():
     
-    global data_length
+    global total_data_length
     
     graph_title = input("Write the file name for the graphs: ")
     
-    data = get_data()
-    data_length = len(data)
+    data = get_data(graph_title)
+    total_data_length = len(data)
+    
     names = [x for x in data.keys()]
     for y in range(len(activity)):
         print(y)
