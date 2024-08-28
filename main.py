@@ -3,10 +3,11 @@ import pytesseract
 import pyautogui as pg
 from time import sleep
 from pprint import pprint
+import traceback
 import json
 import sys, os
+import threading
 
-pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 activity_time_offset = 0.5 #1s works well
 name_center = (1026, 358)
 activity_log = (1115, 402)
@@ -14,8 +15,52 @@ activity_offset = (89, 44)
 violation_log = (1115, 430)
 violation_offset = (89, 72)
 out_data = {}
-start_delay = 5 #in seconds
+start_delay = 3 #in seconds
 printout_log = ''
+
+
+off = -25 #activity offset
+activity_positions = [
+(l:=837+off, t:=157, l+120, t+33),
+(l:=850+off, t+34*1, l+120, t+33+34*1),
+(l:=929+off, t+34*2, l+120, t+33+34*2),
+(l:=942+off, t+34*3, l+120, t+33+34*3),
+(l:=836+off, t+34*4, l+120, t+33+34*4),
+(l:=810+off, t+34*5, l+120, t+33+34*5),
+(l:=795+off, t+34*6, l+120, t+33+34*6),
+(l:=800+off, t+34*7, l+120, t+33+34*7),
+(l:=886+off, t+34*8, l+120, t+33+34*8),
+(l:=904+off, t+34*9, l+120, t+33+34*9),
+(l:=900+off, t+34*10, l+120, t+33+34*10),
+(l:=905+off, t+34*11, l+120, t+33+34*11),
+(l:=831+off, t+34*12, l+120, t+33+34*12),
+(l:=823+off, t+34*13, l+120, t+33+34*13),
+(l:=847+off, t+34*14, l+120, t+33+34*14),
+]
+
+class Settings:
+    settings = {}
+    def load_settings():
+        # load json file into Settings.settings
+        # to be able to access it without instance
+        with open('settings.json', 'r', encoding='utf-8') as file:
+            Settings.settings = json.load(file)
+
+class ThreadWithReturnValue(threading.Thread):
+    
+    def __init__(self, group=None, target=None, name=None,
+                 args=(), kwargs={}, Verbose=None):
+        threading.Thread.__init__(self, group, target, name, args, kwargs)
+        self._return = None
+
+    def run(self):
+        if self._target is not None:
+            self._return = self._target(*self._args,
+                                                **self._kwargs)
+            
+    def join(self, *args):
+        threading.Thread.join(self, *args)
+        return self._return
 
 def get_text_from_position(position, show=False):
     img = ImageGrab.grab()
@@ -26,46 +71,56 @@ def get_text_from_position(position, show=False):
     #img.save(f"{position}.png")
     return pytesseract.image_to_string(img)
 
-def get_number(position):
+def get_number(position, *args):
+    
+    if type(position) == int:
+        position = [position] + list(args)
+
     text = get_text_from_position(position)
-    #print(repr(text), end=' -- ')
     text = text.split(' ')[1:]
     text = ''.join(text)
+    
     text = text.replace(',', '').replace('.', '').replace('O', '0').replace('\n', '')
+    
     if text == '':
         text = '0'
-    #print(text, end='---')
+        
     text = ''.join([x for x in text if x.isdigit()])
-    #print(text, end='---')
+    
     try:
         text = int(text)
     except Exception as e:
         print(e, (position[3]-33)/34)
         print(repr(text))
         text = 0
-    #print(text)
+    
     return text
 
 def get_activity_2():
+    
     sleep(activity_time_offset)
-    off = -25
+    
+    threads = []
+    for x in range(15):
+        threads.append(ThreadWithReturnValue(target=get_number, args=(activity_positions[x]) ))
+        threads[x].start()
     
     numbers = [
-        get_number( (l:=837+off, t:=157, l+120, t+33) ),
-        get_number( (l:=850+off, t+34*1, l+120, t+33+34*1) ),
-        get_number( (l:=929+off, t+34*2, l+120, t+33+34*2) ),
-        get_number( (l:=942+off, t+34*3, l+120, t+33+34*3) ),
-        get_number( (l:=836+off, t+34*4, l+120, t+33+34*4) ),
-        get_number( (l:=810+off, t+34*5, l+120, t+33+34*5) ),
-        get_number( (l:=795+off, t+34*6, l+120, t+33+34*6) ),
-        get_number( (l:=800+off, t+34*7, l+120, t+33+34*7) ),
-        get_number( (l:=886+off, t+34*8, l+120, t+33+34*8) ),
-        get_number( (l:=904+off, t+34*9, l+120, t+33+34*9) ),
-        get_number( (l:=900+off, t+34*10, l+120, t+33+34*10) ),
-        get_number( (l:=905+off, t+34*11, l+120, t+33+34*11) ),
-        get_number( (l:=831+off, t+34*12, l+120, t+33+34*12) ),
-        get_number( (l:=823+off, t+34*13, l+120, t+33+34*13) ),
-        get_number( (l:=847+off, t+34*14, l+120, t+33+34*14) ),
+        threads[0].join(),
+        threads[1].join(),
+        threads[2].join(),
+        threads[3].join(),
+        threads[4].join(),
+        threads[5].join(),
+        threads[6].join(),
+        threads[7].join(),
+        threads[8].join(),
+        threads[9].join(),
+        threads[10].join(),
+        threads[11].join(),
+        threads[12].join(),
+        threads[13].join(),
+        threads[14].join(),
     ]
     
     activity = {
@@ -85,6 +140,7 @@ def get_activity_2():
         "MaterialsGathered": numbers[13],
         "SupplyValueDelivered": numbers[14],
     }
+    
     return activity
 
 #default is the position at the top of the viewport
@@ -153,8 +209,8 @@ def save_data(name, data):
     name = name.replace('\n', '')
     out_data[name] = data
     
-def save_to_file():
-    with open('out.json', 'w') as file:
+def save_to_file(filename='out.json'):
+    with open(filename, 'w') as file:
         file.write(json.dumps(out_data, indent=2))
 
 def start_screen():
@@ -164,8 +220,8 @@ def start_screen():
     print("At the start mouse will move to the area, on which foxhole should be opened. In foxhole you be spawned in, and should NOT have any menu/F1 open.")
     
 def countdown(cnt):
-    for x in range(cnt, 0):
-        print(f"starting in {x}s")
+    for x in range(0, cnt):
+        print(f"starting in {cnt-x}s")
         sleep(1)
 
 def main():
@@ -199,6 +255,7 @@ def main():
         name = get_name()
         if name == "":
             name = f"__{counter}__"
+            
         print(name)
         printout_log += f"{name}\n"
         
@@ -216,8 +273,8 @@ def main():
             same_counter += 1
             if same_counter >= 3:
                 break
-            else:
-                same_counter = 0
+        else:
+            same_counter = 0
 
     # iterate over people at the end of the list
     for x in range(1, 10):
@@ -241,21 +298,24 @@ def main():
     save_to_file()
     exit()
     
+    
+
+Settings.load_settings()
+pytesseract.pytesseract.tesseract_cmd = Settings.settings["Tesseract_Path"]
+    
 if __name__ == '__main__':
     try:
         main()
     except pg.FailSafeException:
         print("Failsafe triggered.")
         print("Progress saved.")
-        save_to_file()
+        save_to_file('out_err.json')
     except Exception as e:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         
-        print(f"Exception occured -- {e} -- {type(e)}")
-        print(exc_type, fname, exc_tb.tb_lineno)
+        print(traceback.format_exc())
+        print("Exception occured")
         print("Progress saved.")
-        save_to_file()
+        save_to_file('out_err.json')
         
     with open("log.txt", "w", encoding="utf-8") as file:
         file.write(printout_log)
