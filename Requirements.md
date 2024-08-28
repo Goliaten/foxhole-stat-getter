@@ -1,6 +1,7 @@
 [How to install python packages](https://packaging.python.org/en/latest/tutorials/installing-packages/)
 
 # Requirements
+- 1920x1080 screen resolution
 - [Python 3.x](https://www.python.org/downloads/)
 - [Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki) - once installed in settings.json change Tesseract_Path to installation path used.
 
