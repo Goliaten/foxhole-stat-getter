@@ -2,6 +2,7 @@
 
 # Requirements
 - [Python 3.x](https://www.python.org/downloads/)
+- [Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki) - once installed in settings.json change Tesseract_Path to installation path used.
 
 ## Python Packages for main.py
 - pillow
