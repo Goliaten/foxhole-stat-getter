@@ -1,7 +1,7 @@
 # foxhole-stat-getter
 Script for scraping activity from foxhole, and making nice graphs.
 
-[Requirements](https://github.com/Goliaten/foxhole-stat-getter/blob/main/Requirements.md)
+## [Requirements](https://github.com/Goliaten/foxhole-stat-getter/blob/main/Requirements.md)
 
 ### How to use:
 1. Make sure Foxhole is on primary/left screen
