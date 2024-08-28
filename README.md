@@ -25,3 +25,5 @@ https://github.com/Goliaten/foxhole-stat-getter/blob/main/Requirements.md
 2. Write filename containing statistics (default output of main.py is "out.json")
 3. Wait until graphs are done
 
+## Disclaimer
+While OCR technology is useful, it's not always correct. Check names that script outputs. If you see something like \_\_number\_\_ that means script couldn't read the name.
