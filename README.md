@@ -1,9 +1,11 @@
 # foxhole-stat-getter
 Script for scraping activity from foxhole, and making nice graphs.
 
-## [Requirements](https://github.com/Goliaten/foxhole-stat-getter/blob/main/Requirements.md)
+## Requirements
+https://github.com/Goliaten/foxhole-stat-getter/blob/main/Requirements.md
 
-### How to use:
+## How to use
+### Main script
 1. Make sure Foxhole is on primary/left screen
 2. Be loaded into the game (be able to walk and shoot)
 3. Do NOT have f1 menu up, or any other menu for that matter
@@ -18,7 +20,7 @@ Script for scraping activity from foxhole, and making nice graphs.
 
 ## In case you want to stop script execution, move your mouse to top left corner of the screen.
 
-### To make gaphs:
+### To make graphs:
 1. Launch chart_maker.py
 2. Write filename containing statistics (default output of main.py is "out.json")
 3. Wait until graphs are done
