@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import json
+import os.path
+from pprint import pprint
 
 filename = 'out.json'
 graph_title = 'WC112 - 5th'
@@ -96,6 +98,7 @@ def chart_handle(id, title, labels, data):
     labels, data = clean_data(labels, data)
     make_chart(id, title, labels, data)
 
+# removes people with sum of 0 stats, sorts data, groups up those with low stats
 def clean_data(labels, data):
     
     global stat_data_length, total_data_length
@@ -137,13 +140,59 @@ def clean_data(labels, data):
     #print(labels)
     return labels, data
 
+def remove_previous_war_stats(data, backup):
+    
+    if backup == None:
+        return data
+    if len(data.keys()) == 0:
+        return data
+    
+    backup = {key.lower(): value for key, value in backup.items()}
+    backup_keys = backup.keys()
+    stat_len = len(activity)
+    
+    for key in data.keys():
+        key_t = key.lower()
+        if key_t in backup_keys:
+        
+            counter = 0
+            for ind in range(stat_len):
+                if data[key][activity[ind]] == backup[key_t][activity[ind]]:
+                    counter += 1
+                    
+            #print(counter)
+            if counter == stat_len:
+                for ind in range(stat_len):
+                    data[key][activity[ind]] = 0
+        
+            if counter == 15 and False:
+                print(key)
+                print(data[key])
+                input('a')
+    
 def main():
     
     global total_data_length
     
-    graph_title = input("Write the file name for the graphs: ")
+    graph_title = input("Write the file name of the source file: ")
+    
+    
+    if not os.path.isfile(graph_title):
+        print("File not found")
+        return
+        
+    backup_json = input("Write filename of a last war json(used to eliminate last war stats)(optional): ")
     
     data = get_data(graph_title)
+    
+    if not os.path.isfile(backup_json):
+        print("Couldn't load secondary json")
+        backup_data = None
+    else:
+        print("Found secondary json, cleaning data.")
+        backup_data = get_data(backup_json)
+        remove_previous_war_stats(data, backup_data)
+        
     total_data_length = len(data)
     
     names = [x for x in data.keys()]
