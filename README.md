@@ -23,7 +23,8 @@ https://github.com/Goliaten/foxhole-stat-getter/blob/main/Requirements.md
 ### To make graphs:
 1. Launch chart_maker.py
 2. Write filename containing statistics (default output of main.py is "out.json")
-3. Wait until graphs are done
+3. (optional) Write filename with stats from the previous war. This will 'clean' the data from stats of people that didn't log on. (Their statistics from past wars don't reset if they don't log on)
+4. Wait until graphs are done
 
 ## Disclaimer
 While OCR technology is useful, it's not always correct. Check names that script outputs. If you see something like \_\_number\_\_ that means script couldn't read the name.
