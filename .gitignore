@@ -3,3 +3,4 @@
 top_stats.*
 log.*
 __pycache__
+out.json

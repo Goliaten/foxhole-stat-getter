@@ -206,7 +206,7 @@ def main():
         title = f'{graph_title} - {y} {activity_label[y]}'
         chart_handle(y, title, names, values)
     
-    if not backup_data:
+    if backup_data:
         save_to_file(data, '.'.join(graph_title.split('.')[:-1]) + '_cleaned.' + graph_title.split('.')[-1])
 
 if __name__ == '__main__':
