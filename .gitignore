@@ -1,0 +1,5 @@
+*.jpg
+*.png
+top_stats.*
+log.*
+__pycache__
