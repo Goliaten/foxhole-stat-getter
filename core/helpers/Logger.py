@@ -2,7 +2,7 @@ import logging
 import os
 from logging.handlers import RotatingFileHandler
 import core.config as cfg
-from typing import Optional, Dict, Any
+from typing import Optional
 from datetime import datetime
 
 
@@ -24,9 +24,9 @@ class Logger:
         self.logger = logging.getLogger(cfg.APP_NAME)
         self.logger.setLevel(cfg.LOG_LEVEL)
 
-        # Create formatter
+        # Create formatter with filename and function name included
         formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+            "%(asctime)s - %(levelname)s - %(funcName)s - %(message)s"
         )
 
         # Create console handler (prints to screen)
@@ -46,7 +46,9 @@ class Logger:
             log_filename, maxBytes=cfg.LOG_MAX_SIZE, backupCount=100
         )
         file_handler.setFormatter(
-            logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+            logging.Formatter(
+                "%(asctime)s - %(levelname)s %(verbosity)s - %(filename)s - %(funcName)s - %(message)s"
+            )
         )
         self.logger.addHandler(file_handler)
 
@@ -65,9 +67,15 @@ class Logger:
 
     def log(self, level: str, message: str, verbosity: int = 1) -> None:
         """Log a message with the specified level and verbosity."""
-        if level == "INFO" and verbosity >= cfg.LOG_VERBOSITY:
+        if level == "INFO" and verbosity > cfg.LOG_VERBOSITY:
             return  # Skip if verbosity level is too high
-        self.logger.log(getattr(logging, level), message)
+        # Use stacklevel=2 to ensure the correct caller function is logged
+        self.logger.log(
+            getattr(logging, level),
+            message,
+            stacklevel=cfg.LOG_STACK_LEVEL,
+            extra={"verbosity": str(verbosity)},
+        )
 
     def debug(self, message: str) -> None:
         """Log a debug message."""
