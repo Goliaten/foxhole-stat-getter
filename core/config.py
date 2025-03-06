@@ -13,3 +13,8 @@ LOG_LEVEL = "DEBUG"  # Default log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 LOG_VERBOSITY = (
     2  # Verbosity level for INFO logs (1 = least verbose, higher = more verbose)
 )
+LOG_STACK_LEVEL = 3
+
+STARTUP_RUN = False
+SCRAPER_RUN = True
+PROCESSOR_RUN = True
