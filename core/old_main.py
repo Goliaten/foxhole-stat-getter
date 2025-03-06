@@ -1,3 +1,4 @@
+# type: ignore
 from PIL import ImageGrab
 import pytesseract
 import pyautogui as pg
