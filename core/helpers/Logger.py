@@ -1,8 +1,8 @@
 import logging
 import os
 from logging.handlers import RotatingFileHandler
+import core.config as cfg
 from typing import Optional, Dict, Any
-import config as cfg
 from datetime import datetime
 
 
@@ -90,7 +90,7 @@ class Logger:
         self.log("CRITICAL", message)
 
     @classmethod
-    def get_logger(cls) -> "Logger":
+    def get(cls) -> "Logger":
         """Get the singleton instance of the Logger."""
         if cls._instance is None:
             cls._instance = Logger()
