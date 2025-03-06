@@ -1,5 +1,6 @@
 mypy
 Pillow
-pyautogui
+pyautoguiT
 pytesseract
 matplotlib
+black
