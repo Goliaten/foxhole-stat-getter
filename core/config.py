@@ -1,6 +1,9 @@
 START_DELAY = 3  # in seconds
 ACTIVITY_TIME_OFFSET = 0.5  # in seconds
 
+APP_NAME = "foxhole-stat-getter"
+
+
 # Logging configuration
 LOG_DIR = "logs"  # Directory to store log files
 LOG_PREFIX = "app"  # Prefix for log filenames
