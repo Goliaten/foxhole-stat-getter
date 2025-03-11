@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from core.dataholders.BaseDataholder import BaseDataholder
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Area(BaseDataholder):
     left: int
     top: int
