@@ -3,7 +3,7 @@ from core.dataholders.BaseDataholder import BaseDataholder
 
 
 @dataclass
-class Position(BaseDataholder):
+class Area(BaseDataholder):
     left: int
     top: int
     right: int
