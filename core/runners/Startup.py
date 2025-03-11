@@ -7,8 +7,6 @@ from time import sleep
 
 class Startup(BaseRunner):
     def run(self):
-        Logger.get().debug(cfg.LOG_DIR)
-        return
         Logger.get().info("Starting up...")
         Logger.get().info(
             "This script will allow you to gather activity statistics of everyone in your regiment."

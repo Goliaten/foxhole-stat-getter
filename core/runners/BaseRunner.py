@@ -6,6 +6,6 @@ class BaseRunner:
     def setup(self): ...
 
     def run(self) -> Self:
-        return self
+        raise NotImplementedError
 
     def get_data(self) -> Any: ...
