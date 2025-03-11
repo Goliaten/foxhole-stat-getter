@@ -1,21 +1,16 @@
+from logging.handlers import RotatingFileHandler
+from core.helpers.BaseHelper import BaseHelper
 import logging
 import os
-from logging.handlers import RotatingFileHandler
 import core.config as cfg
 from typing import Optional
 from datetime import datetime
 
 
-class Logger:
+class Logger(BaseHelper):
     _instance: Optional["Logger"] = None
 
-    def __new__(cls) -> "Logger":
-        if cls._instance is None:
-            cls._instance = super(Logger, cls).__new__(cls)
-            cls._instance._initialize_logger()
-        return cls._instance
-
-    def _initialize_logger(self) -> None:
+    def _initialize(self) -> None:
         """Initialize the logger with the configuration from config.py."""
         # Ensure log directory exists
         os.makedirs(cfg.LOG_DIR, exist_ok=True)
@@ -96,10 +91,3 @@ class Logger:
     def critical(self, message: str) -> None:
         """Log a critical message."""
         self.log("CRITICAL", message)
-
-    @classmethod
-    def get(cls) -> "Logger":
-        """Get the singleton instance of the Logger."""
-        if cls._instance is None:
-            cls._instance = Logger()
-        return cls._instance
