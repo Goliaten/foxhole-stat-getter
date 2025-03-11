@@ -1,4 +1,4 @@
-from typing import List, Optional, Self
+from typing import List, Optional, Self, final
 
 from core.dataholders.Point import Point
 
@@ -70,12 +70,15 @@ class MouseMover:
     # with implementation depending on type of gui handler
     # Methods below use the afforementioned.
 
+    @final
     def open_f1(self):
         self.type_write(["f1"])
 
+    @final
     def close_f1(self):
         self.type_write(["esc"])
 
+    @final
     def open_activity_log(self, index: int) -> None:
         temp_location: Point = Point(x=100, y=100)
         # TODO - implement some way of parametrisation.
@@ -85,14 +88,17 @@ class MouseMover:
         ).click_left(temp_location)
         pass
 
+    @final
     def close_activity_log(self) -> None:
         self.type_write(["esc"])
 
+    @final
     def scroll_one_player(self) -> None:
         temp_scroll = 35
         # TODO - needs parametrisation
         self.scroll(temp_scroll)
 
+    @final
     def open_violation_log(self, index) -> None:
         # tbf, optional. Stat getter is meant to be activity scraper.
         pass
