@@ -7,6 +7,8 @@ from typing import Optional
 from datetime import datetime
 
 
+# TODO: Maybe set up a separate process or thread to give it string
+#   to then log. It may improve performance if we're loggin a lot.
 class Logger(BaseHelper):
     _instance: Optional["Logger"] = None
 
