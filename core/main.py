@@ -20,11 +20,7 @@ def main():
         Logger.get().info("Startup skipped")
         Logger.get().info(f"Reason - {cfg.STARTUP_RUN=}", 2)
 
-    if cfg.SCRAPER_RUN:
-        Scraper().run()
-    else:
-        Logger.get().info("Scraper skipped")
-        Logger.get().info(f"Reason - {cfg.SCRAPER_RUN=}", 2)
+    Scraper().run()
 
     if cfg.PROCESSOR_RUN:
         Processor().run()
