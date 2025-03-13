@@ -101,3 +101,8 @@ class MouseMover(BaseHelper):
     def open_violation_log(self, index) -> None:
         # tbf, optional. Stat getter is meant to be activity scraper.
         pass
+
+    @final
+    def scroll_to_top(self) -> None:
+        self.scroll(cfg.MM_TOP_SCROLL_AMOUNT)
+        # TODO: test how it behaves, with current 3000 amount of scroll

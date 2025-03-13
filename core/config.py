@@ -41,6 +41,7 @@ MM_TYPEWRITE_INTERVAL = 0.1
 # Options are:
 #   1 - PyAutoGui based MouseMover
 MM_CHOSEN_CLASS = 1
+MM_TOP_SCROLL_AMOUNT = 3000
 
 # ========================
 # pyautogui config
