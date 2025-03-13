@@ -1,6 +1,7 @@
 from typing import List, Optional, Self, final
-
 from core.dataholders.Point import Point
+import core.config as cfg
+from core.helpers.BaseHelper import BaseHelper
 
 # To be fair, I could say eh, and implement the pyautogio class here.
 # But i'm thinking of maybe using it in future for different autmation purpose.
@@ -8,10 +9,8 @@ from core.dataholders.Point import Point
 # So a frontface class will make life easier later.
 
 
-class MouseMover:
+class MouseMover(BaseHelper):
     _instance: Optional["MouseMover"] = None
-
-    def _initialize(cls): ...
 
     def move_to(self, coords: Point) -> Self:
         # Move to the coords
@@ -51,7 +50,7 @@ class MouseMover:
         return self
 
     def type_write(
-        self, text: str | List[str], interval: Optional[float] = None
+        self, text: str | List[str], interval: float = cfg.MM_TYPEWRITE_INTERVAL
     ) -> Self:
         # maybe instead of List[str], it should be some special type?
         return self
