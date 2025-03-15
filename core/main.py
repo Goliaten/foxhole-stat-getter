@@ -6,13 +6,11 @@ from core.helpers.Logger import Logger
 from core.runners.Startup import Startup
 from core.runners.Scraper import Scraper
 from core.runners.Processor import Processor
-from core.system import setup
 import core.config as cfg
 
 
 def main():
     Logger.get().info("Program starts")
-    setup()
 
     if cfg.STARTUP_RUN:
         Startup().run()
