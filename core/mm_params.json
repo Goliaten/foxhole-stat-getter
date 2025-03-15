@@ -1,0 +1,10 @@
+[
+    {
+        "resolution": [1920, 1080],
+        "scale": 100,
+        "activity_log_button_position": ["x","y","w","h"],
+        "violation_log_button_position": ["x","y","w","h"],
+        "log_value_offset": ["x","y"],
+        "log_value_first_position": ["x","y","w","h"]
+    }
+]
