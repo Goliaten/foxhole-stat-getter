@@ -78,10 +78,15 @@ class MouseMover(BaseHelper):
         self.type_write(["esc"])
 
     @final
-    def open_activity_log(self, index: int) -> None:
+    def open_activity_log(self, index: int = 0) -> None:
         temp_location: Point = Point(x=100, y=100)
         # TODO - implement some way of parametrisation.
         # In order for this to work in every resolution and interface scale.
+        # TODO: Different positions of buttons depending on if player:
+        #   is online,
+        #   is in hex,
+        #   (?)is in squad,
+        #   if offline
         self.click_right(
             temp_location,
         ).click_left(temp_location)

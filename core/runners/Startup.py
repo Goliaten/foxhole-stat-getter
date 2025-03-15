@@ -7,6 +7,7 @@ from time import sleep
 
 class Startup(BaseRunner):
     def run(self):
+        # TODO: go over what gemini spit out and rewrite it
         Logger.get().info("Starting up...")
         Logger.get().info(
             "This script will allow you to gather activity statistics of everyone in your regiment."

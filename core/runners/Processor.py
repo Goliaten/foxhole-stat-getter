@@ -5,5 +5,5 @@ from core.runners.BaseRunner import BaseRunner
 
 
 class Processor(BaseRunner):
-
+    # TODO: implement processor
     pass
