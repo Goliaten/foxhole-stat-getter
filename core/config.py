@@ -1,7 +1,17 @@
 # ========================
 # General app config
 # ========================
-APP_NAME = "foxhole-stat-getter"
+GEN_APP_NAME = "foxhole-stat-getter"
+
+# Screen resolution used by user.
+# Should be width, height
+GEN_RESOLUTION = 1920, 1080
+
+# Scale of user interface.
+# In percentage points.
+GEN_SCALE = 100
+
+GEN_CORE_DIRECTORY = "core"
 
 
 # ========================
@@ -44,6 +54,7 @@ PROCESSOR_RUN = True
 # MouseMover class config
 # ========================
 
+MM_PARAMS_FILENAME = "mm_params.json"
 # Resolution of your screen
 # TODO: give user some presets to choose from
 MM_SCREEN_RESOLUTION = (1920, 1080)

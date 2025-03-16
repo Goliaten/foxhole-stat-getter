@@ -6,7 +6,8 @@ from core.helpers.gui_controllers.MouseMover import MouseMover
 
 
 class PyAutoGUIMouseMover(MouseMover):
-    def _initialize(cls):
+    def initialize(cls):
+        super().initialize()
         # Initialize any necessary configurations for pyautogui
         pyautogui.FAILSAFE = cfg.PAG_FAILSAFE  # Enable failsafe
         pyautogui.PAUSE = cfg.PAG_PAUSE  # Set a small pause between actions

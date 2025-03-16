@@ -12,13 +12,13 @@ from datetime import datetime
 class Logger(BaseHelper):
     _instance: Optional["Logger"] = None
 
-    def _initialize(self) -> None:
+    def initialize(self) -> None:
         """Initialize the logger with the configuration from config.py."""
         # Ensure log directory exists
         os.makedirs(cfg.LOG_DIR, exist_ok=True)
 
         # Create logger
-        self.logger = logging.getLogger(cfg.APP_NAME)
+        self.logger = logging.getLogger(cfg.GEN_APP_NAME)
         self.logger.setLevel(cfg.LOG_LEVEL)
 
         # Create formatter with filename and function name included

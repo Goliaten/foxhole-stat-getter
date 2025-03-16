@@ -2,6 +2,7 @@ from typing import List, Optional, Self, final
 from core.dataholders.Point import Point
 import core.config as cfg
 from core.helpers.BaseHelper import BaseHelper
+from core.system import load_mouse_mover_params
 
 # To be fair, I could say eh, and implement the pyautogio class here.
 # But i'm thinking of maybe using it in future for different autmation purpose.
@@ -11,6 +12,10 @@ from core.helpers.BaseHelper import BaseHelper
 
 class MouseMover(BaseHelper):
     _instance: Optional["MouseMover"] = None
+
+    def initialize(self) -> None:
+        super().initialize()
+        self.mm_params = load_mouse_mover_params()
 
     def move_to(self, coords: Point) -> Self:
         # Move to the coords
