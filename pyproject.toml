@@ -1,0 +1,12 @@
+[project]
+name = "foxhole-stat-getter"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib>=3.10.5",
+    "pillow>=11.3.0",
+    "pyautogui>=0.9.54",
+    "pytesseract>=0.3.13",
+]
