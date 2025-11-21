@@ -8,7 +8,7 @@ import json
 import sys, os
 import threading
 
-activity_time_offset = 0.5  # 1s works well
+activity_time_offset = 1  # 1s works well
 name_center = (1026, 358)
 activity_log = (1115, 402)
 activity_offset = (89, 44)
@@ -95,6 +95,7 @@ def get_number(position, *args):
     except Exception as e:
         print(e, (position[3] - 33) / 34)
         print(repr(text))
+        print(f"Position: {args[0]}")
         text = 0
 
     return text
@@ -106,7 +107,7 @@ def get_activity_2():
     threads = []
     for x in range(15):
         threads.append(
-            ThreadWithReturnValue(target=get_number, args=(activity_positions[x]))
+            ThreadWithReturnValue(target=get_number, args=(activity_positions[x], x))
         )
         threads[x].start()
 
@@ -161,7 +162,7 @@ def check_if_active(position):
     img = img.crop(rect)
     text = pytesseract.image_to_string(img).lower()
     print(f"check_if_active text1: {text}. {rect=}")
-    if text == "activity log\n":
+    if "activity log" in text:
         return "AL"
 
     rect = (rect[0], rect[1] + 28, rect[2], rect[3] + 28)
@@ -169,7 +170,7 @@ def check_if_active(position):
     img = img.crop(rect)
     text = pytesseract.image_to_string(img).lower()
     print(f"check_if_active text2: {text}. {rect=}")
-    if text == "activity log\n":
+    if "activity log" in text:
         return "WH"
     else:
         return "RP"
