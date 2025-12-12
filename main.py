@@ -1,12 +1,12 @@
-from PIL import ImageGrab
-import pytesseract
+from difflib import SequenceMatcher
+from PIL import ImageGrab, ImageOps, Image
 import pyautogui as pg
 from time import sleep
 from pprint import pprint
 import traceback
 import json
-import sys, os
 import threading
+import numpy as np
 
 activity_time_offset = 1  # 1s works well
 name_center = (1026, 358)
@@ -20,22 +20,39 @@ printout_log = ""
 
 
 off = -25  # activity offset
+# activity_positions = [
+#     (l := 837 + off, t := 157, l + 120, t + 33),
+#     (l := 850 + off, t + 34 * 1, l + 120, t + 33 + 34 * 1),
+#     (l := 929 + off, t + 34 * 2, l + 120, t + 33 + 34 * 2),
+#     (l := 942 + off, t + 34 * 3, l + 120, t + 33 + 34 * 3),
+#     (l := 836 + off, t + 34 * 4, l + 120, t + 33 + 34 * 4),
+#     (l := 810 + off, t + 34 * 5, l + 120, t + 33 + 34 * 5),
+#     (l := 795 + off, t + 34 * 6, l + 120, t + 33 + 34 * 6),
+#     (l := 800 + off, t + 34 * 7, l + 120, t + 33 + 34 * 7),
+#     (l := 886 + off, t + 34 * 8, l + 120, t + 33 + 34 * 8),
+#     (l := 904 + off, t + 34 * 9, l + 120, t + 33 + 34 * 9),
+#     (l := 900 + off, t + 34 * 10, l + 120, t + 33 + 34 * 10),
+#     (l := 905 + off, t + 34 * 11, l + 120, t + 33 + 34 * 11),
+#     (l := 831 + off, t + 34 * 12, l + 120, t + 33 + 34 * 12),
+#     (l := 823 + off, t + 34 * 13, l + 120, t + 33 + 34 * 13),
+#     (l := 847 + off, t + 34 * 14, l + 120, t + 33 + 34 * 14),
+# ]
 activity_positions = [
-    (l := 837 + off, t := 157, l + 120, t + 33),
-    (l := 850 + off, t + 34 * 1, l + 120, t + 33 + 34 * 1),
-    (l := 929 + off, t + 34 * 2, l + 120, t + 33 + 34 * 2),
-    (l := 942 + off, t + 34 * 3, l + 120, t + 33 + 34 * 3),
-    (l := 836 + off, t + 34 * 4, l + 120, t + 33 + 34 * 4),
-    (l := 810 + off, t + 34 * 5, l + 120, t + 33 + 34 * 5),
-    (l := 795 + off, t + 34 * 6, l + 120, t + 33 + 34 * 6),
-    (l := 800 + off, t + 34 * 7, l + 120, t + 33 + 34 * 7),
-    (l := 886 + off, t + 34 * 8, l + 120, t + 33 + 34 * 8),
-    (l := 904 + off, t + 34 * 9, l + 120, t + 33 + 34 * 9),
-    (l := 900 + off, t + 34 * 10, l + 120, t + 33 + 34 * 10),
-    (l := 905 + off, t + 34 * 11, l + 120, t + 33 + 34 * 11),
-    (l := 831 + off, t + 34 * 12, l + 120, t + 33 + 34 * 12),
-    (l := 823 + off, t + 34 * 13, l + 120, t + 33 + 34 * 13),
-    (l := 847 + off, t + 34 * 14, l + 120, t + 33 + 34 * 14),
+    (l := 837, t := 157, l + 120, t + 33),
+    (l := 850, t + 34 * 1, l + 120, t + 33 + 34 * 1),
+    (l := 929, t + 34 * 2, l + 120, t + 33 + 34 * 2),
+    (l := 942, t + 34 * 3, l + 120, t + 33 + 34 * 3),
+    (l := 836, t + 34 * 4, l + 120, t + 33 + 34 * 4),
+    (l := 810, t + 34 * 5, l + 120, t + 33 + 34 * 5),
+    (l := 795, t + 34 * 6, l + 120, t + 33 + 34 * 6),
+    (l := 800, t + 34 * 7, l + 120, t + 33 + 34 * 7),
+    (l := 886, t + 34 * 8, l + 120, t + 33 + 34 * 8),
+    (l := 904, t + 34 * 9, l + 120, t + 33 + 34 * 9),
+    (l := 900, t + 34 * 10, l + 120, t + 33 + 34 * 10),
+    (l := 905, t + 34 * 11, l + 120, t + 33 + 34 * 11),
+    (l := 831, t + 34 * 12, l + 120, t + 33 + 34 * 12),
+    (l := 823, t + 34 * 13, l + 120, t + 33 + 34 * 13),
+    (l := 847, t + 34 * 14, l + 120, t + 33 + 34 * 14),
 ]
 
 
@@ -67,12 +84,23 @@ class ThreadWithReturnValue(threading.Thread):
 
 def get_text_from_position(position, show=False):
     img = ImageGrab.grab()
-    img = img.crop(position)
-    img = img.convert("L")
+    print(position)
+    img = img.crop(position).convert("RGB")
     if show:
         img.show()
-    # img.save(f"{position}.png")
-    return pytesseract.image_to_string(img)
+
+    # import time
+    # img.save(f"t_{time.time()}.png")
+
+    img = ImageOps.expand(img, border=20, fill="black")
+    img.resize((img.width * 4, img.height * 4), Image.Resampling.LANCZOS)
+    npimg = np.asarray(img)
+
+    res = ocr.predict(npimg)
+    lst = res[0].json.get("res").get("rec_texts")
+    out = lst[0] if lst else ""
+    print(f"get_text_from_position: > {out} <")
+    return out
 
 
 def get_number(position, *args):
@@ -104,29 +132,22 @@ def get_number(position, *args):
 def get_activity_2():
     sleep(activity_time_offset)
 
-    threads = []
-    for x in range(15):
-        threads.append(
-            ThreadWithReturnValue(target=get_number, args=(activity_positions[x], x))
-        )
-        threads[x].start()
-
     numbers = [
-        threads[0].join(),
-        threads[1].join(),
-        threads[2].join(),
-        threads[3].join(),
-        threads[4].join(),
-        threads[5].join(),
-        threads[6].join(),
-        threads[7].join(),
-        threads[8].join(),
-        threads[9].join(),
-        threads[10].join(),
-        threads[11].join(),
-        threads[12].join(),
-        threads[13].join(),
-        threads[14].join(),
+        get_number(activity_positions[0], 0),
+        get_number(activity_positions[1], 1),
+        get_number(activity_positions[2], 2),
+        get_number(activity_positions[3], 3),
+        get_number(activity_positions[4], 4),
+        get_number(activity_positions[5], 5),
+        get_number(activity_positions[6], 6),
+        get_number(activity_positions[7], 7),
+        get_number(activity_positions[8], 8),
+        get_number(activity_positions[9], 9),
+        get_number(activity_positions[10], 10),
+        get_number(activity_positions[11], 11),
+        get_number(activity_positions[12], 12),
+        get_number(activity_positions[13], 13),
+        get_number(activity_positions[14], 14),
     ]
 
     activity = {
@@ -151,7 +172,7 @@ def get_activity_2():
 
 
 # default is the position at the top of the viewport
-def get_name(position=(944, 343, 1126, 373)):
+def get_name(position=(940, 343, 1126, 373)):
     return get_text_from_position(position)
 
 
@@ -160,17 +181,38 @@ def check_if_active(position):
     rect = (rect[0] + 89, rect[1] + 44, rect[2] + 89, rect[3] + 44)
     img = ImageGrab.grab()
     img = img.crop(rect)
-    text = pytesseract.image_to_string(img).lower()
+
+    img = ImageOps.expand(img, border=20, fill="black")
+    npimg = np.asarray(img)
+    res = ocr.predict(npimg)
+    text = (
+        res[0].json.get("res").get("rec_texts")[0]
+        if res[0].json.get("res").get("rec_texts")
+        else ""
+    )
+    print(f"check_if_active: > {text} <")
+
+    # text = pytesseract.image_to_string(img).lower()
     print(f"check_if_active text1: {text}. {rect=}")
-    if "activity log" in text:
+    if SequenceMatcher(None, "activity log", text.lower()).ratio() >= 0.8:
         return "AL"
 
     rect = (rect[0], rect[1] + 28, rect[2], rect[3] + 28)
     img = ImageGrab.grab()
     img = img.crop(rect)
-    text = pytesseract.image_to_string(img).lower()
+
+    img = ImageOps.expand(img, border=20, fill="black")
+    npimg = np.asarray(img)
+    res = ocr.predict(npimg)
+    text = (
+        res[0].json.get("res").get("rec_texts")[0]
+        if res[0].json.get("res").get("rec_texts")
+        else ""
+    )
+    print(f"check_if_active 2: > {text} <")
+
     print(f"check_if_active text2: {text}. {rect=}")
-    if "activity log" in text:
+    if SequenceMatcher(None, "activity log", text.lower()).ratio() >= 0.8:
         return "WH"
     else:
         return "RP"
@@ -272,7 +314,7 @@ def countdown(cnt):
 
 def main():
     global printout_log
-
+    global ocr
     # focus on game, assumed to be on screen one, 1920x1080
     start_screen()
 
@@ -281,6 +323,9 @@ def main():
     input("\nPress enter in terminal to start\n")
     countdown(start_delay)
     print("Starting")
+    from paddleocr import PaddleOCR
+
+    ocr = PaddleOCR(lang="en")
 
     pg.click((100, 100))
 
@@ -325,7 +370,7 @@ def main():
     # iterate over people at the end of the list
     for x in range(1, 10):
         v_off = 35 * x  # vertical offset
-        name = get_name((944, 343 + v_off, 1126, 373 + v_off))  # name_frame
+        name = get_name((940, 343 + v_off, 1126, 373 + v_off))  # name_frame
 
         if name == "":
             name = f"__{counter}__"
@@ -347,7 +392,7 @@ def main():
 
 
 Settings.load_settings()
-pytesseract.pytesseract.tesseract_cmd = Settings.settings["Tesseract_Path"]
+# a = threading.Lock()
 
 if __name__ == "__main__":
     try:
