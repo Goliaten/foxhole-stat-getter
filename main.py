@@ -108,8 +108,7 @@ def get_number(position, *args):
         position = [position] + list(args)
 
     text = get_text_from_position(position)
-    text = text.split(" ")[1:]
-    text = "".join(text)
+    text = text.strip()
 
     text = text.replace(",", "").replace(".", "").replace("O", "0").replace("\n", "")
 
@@ -126,6 +125,7 @@ def get_number(position, *args):
         print(f"Position: {args[0]}")
         text = 0
 
+    print(f"---- >{text}< ----")
     return text
 
 
