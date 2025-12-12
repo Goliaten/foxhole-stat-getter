@@ -4,3 +4,8 @@ top_stats.*
 log.*
 __pycache__
 out.json
+.python-version
+uvlock
+no_stats_prev_war.txt
+out_err.json
+uv.lock
